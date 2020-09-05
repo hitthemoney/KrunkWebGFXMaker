@@ -18,7 +18,7 @@ function init()
     try{
         renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     }catch(e){
-        alert("brave has a bit of a problem with some WebGL setting, we reccomend using a different browser")   
+        alert("brave has a bit of a problem with some WebGL setting, we reccomend using a different browser\nError:"+e)   
     }
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
