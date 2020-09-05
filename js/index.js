@@ -43,7 +43,7 @@ function init() {
 
     loader = new GLTFLoader();
 
-    loader.load('../assets/rig.glb',
+    loader.load('./assets/rig.glb',
     (gltf) => {
         //parse GLTF data
         rig = gltf;
