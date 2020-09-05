@@ -141,6 +141,9 @@ function animate(){
         }
         armR.rotation.set(sets['right arm']['upper']['XRot'],sets['right arm']['upper']['YRot'],sets['right arm']['upper']['ZRot']);
         armR.children[0].rotation.set(sets['right arm']['lower']['XRot'],sets['right arm']['lower']['YRot'],sets['right arm']['lower']['ZRot']);
+        
+        armL.rotation.set(sets['left arm']['upper']['XRot'],sets['left arm']['upper']['YRot'],sets['left arm']['upper']['ZRot']);
+        armL.children[0].rotation.set(sets['left arm']['lower']['XRot'],sets['left arm']['lower']['YRot'],sets['left arm']['lower']['ZRot']);
     }
     requestAnimationFrame(animate);
     controls.update();
