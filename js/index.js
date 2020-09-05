@@ -8,14 +8,18 @@ var scene, controls, camera, renderer, loader, rig, sets;
 
 if(localStorage["hasAlert"] !== "t") alert("This is not the most recommended way for you to make renders, I recommend downloading blender instead at https://blender.org");
 localStorage.setItem("hasAlert", "t")
-if("Netscape" == navigator.appName){alert("brave appears to have some difficulties with THREEjs, please seek alternate browsers")}
+
 init();
 animate();
 function init()
 {
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.25, 100);
     scene = new THREE.Scene();
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    try{
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    }catch(e){
+        alert("brave has a bit of a problem with some WebGL setting, we reccomend using a different browser")   
+    }
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
