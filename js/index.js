@@ -8,7 +8,7 @@ var scene, controls, camera, renderer, loader, rig, sets;
 
 if(localStorage["hasAlert"] !== "t") alert("This is not the most recommended way for you to make renders, I recommend downloading blender instead at https://blender.org");
 localStorage.setItem("hasAlert", "t")
-
+if("Netscape" == navigator.appName){alert("brave appears to have some difficulties with THREEjs, please seek alternate browsers")}
 init();
 animate();
 function init()
@@ -54,6 +54,25 @@ function init()
             rig = gltf;
             scene.add(rig.scene);
             console.log(rig.scene);
+            
+            new RGBELoader()
+                .setDataType(THREE.UnsignedByteType)
+                .load('./assets/kloppenheim_06_1k.hdr', (tex) => {
+                    var premGenerator = new THREE.PMREMGenerator(renderer);
+                    premGenerator.compileEquirectangularShader();
+
+                    let envMap = premGenerator.fromEquirectangular(tex).texture;
+
+                    //scene.background = envMap;
+                    scene.enviroment = envMap;
+                    
+                    for(var i=3;i<rig.scene.children[0].children.length;i++){
+                        rig.scene.children[0].children[i].material;.envMap = envMap;
+                    }
+                
+                    tex.dispose();
+                    premGenerator.dispose();
+                });
         },
         (xhr) =>
         {
@@ -64,20 +83,7 @@ function init()
             console.log('error: ' + err);
         });
     
-        new RGBELoader()
-            .setDataType(THREE.UnsignedByteType)
-            .load('./assets/kloppenheim_06_1k.hdr', (tex) => {
-                var premGenerator = new THREE.PMREMGenerator(renderer);
-                premGenerator.compileEquirectangularShader();
-            
-                let envMap = premGenerator.fromEquirectangular(tex).texture;
-                
-                scene.background = envMap;
-                scene.enviroment = envMap;
-                
-                tex.dispose();
-                premGenerator.dispose();
-            });
+       
 }
 
 function createGUI()
