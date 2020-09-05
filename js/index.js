@@ -5,7 +5,7 @@ import {OrbitControls} from './OrbitControls.js'
 
 var scene, controls, camera, renderer, loader, rig, sets;
 
-alert("This is not the most reccomended way for you to make renders, I reccomend downloading blender instead at https://blender.org");
+alert("This is not the most recommended way for you to make renders, I reccomend downloading blender instead at https://blender.org");
 
 init();
 animate();
