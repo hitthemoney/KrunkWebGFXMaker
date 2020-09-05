@@ -2,6 +2,7 @@ import * as THREE from "./three.module.js"
 import { GUI } from './dat.gui.module.js'
 import { GLTFLoader } from './GLTFLoader.js'
 import { OrbitControls } from './OrbitControls.js'
+import { RGBELoader} from './RGBELoader.js'
 
 var scene, controls, camera, renderer, loader, rig, sets;
 
@@ -35,12 +36,12 @@ function init()
 
     createGUI();
 
-    var lig = new THREE.AmbientLight(0x999999);
+    /*var lig = new THREE.AmbientLight(0x999999);
     scene.add(lig);
 
-    var lig = new THREE.PointLight(0xffffff, 1, 100);
+    var lig = new THREE.PointLight(0xffffff, 1, 100); //replaced with new lighting setup (see below at HDRi)
     lig.position.set(10, 0, -5);
-    scene.add(lig);
+    scene.add(lig);*/
 
     window.addEventListener('resize', onWinResiz, false);
 
@@ -62,6 +63,21 @@ function init()
         {
             console.log('error: ' + err);
         });
+    
+        new RGBELoader()
+            .setDataType(THREE.UnsignedByteType)
+            .load('./assets/kloppenheim_06_1k.hdr', (tex) => {
+                var premGenerator = new THREE.PMREMGenerator(renderer);
+                premGenerator.compileEquirectangularShader();
+            
+                let envMap = premGenerator.fromEquirectangular(tex).texture;
+                
+                scene.background = envMap;
+                scene.enviroment = envMap;
+                
+                tex.dispose();
+                premGenerator.dispose();
+            });
 }
 
 function createGUI()
