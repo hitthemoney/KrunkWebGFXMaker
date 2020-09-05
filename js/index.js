@@ -5,7 +5,8 @@ import { OrbitControls } from './OrbitControls.js'
 
 var scene, controls, camera, renderer, loader, rig, sets;
 
-alert("This is not the most recommended way for you to make renders, I reccomend downloading blender instead at https://blender.org");
+if(localStorage["hasAlert"] !== "t") alert("This is not the most recommended way for you to make renders, I recommend downloading blender instead at https://blender.org");
+localStorage.setItem("hasAlert", "t")
 
 init();
 animate();
