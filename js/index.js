@@ -67,7 +67,7 @@ function init()
                     scene.enviroment = envMap;
                     
                     for(var i=3;i<rig.scene.children[0].children.length;i++){
-                        rig.scene.children[0].children[i].material;.envMap = envMap;
+                        rig.scene.children[0].children[i].material.envMap = envMap;
                     }
                 
                     tex.dispose();
