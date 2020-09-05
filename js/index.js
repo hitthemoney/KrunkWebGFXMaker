@@ -1,13 +1,14 @@
-import * as THREE from "./three.module.js"
-import { GUI } from './dat.gui.module.js'
-import { GLTFLoader } from './GLTFLoader.js'
-import { OrbitControls } from './OrbitControls.js'
-import { RGBELoader} from './RGBELoader.js'
+import * as THREE from "./three.module.js";
+import { GUI } from './dat.gui.module.js';
+import { GLTFLoader } from './GLTFLoader.js';
+import { OrbitControls } from './OrbitControls.js';
+import { RGBELoader} from './RGBELoader.js';
 window.THREE = THREE;
 var scene, controls, camera, renderer, loader, rig, sets;
 
 if(localStorage["hasAlert"] !== "t") alert("This is not the most recommended way for you to make renders, I recommend downloading blender instead at https://blender.org");
-localStorage.setItem("hasAlert", "t")
+localStorage.setItem("hasAlert", "t");
+
 
 init();
 animate();
@@ -16,14 +17,13 @@ function init()
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.25, 100);
     scene = new THREE.Scene();
     try{
-        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    }catch(e){
-        alert("brave has a bit of a problem with some WebGL setting, we reccomend using a different browser\nError:"+e)   
-    }
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
-
+    }catch(e){
+        alert("this browser has difficulty starting the WebGL context, please use another browser");
+    }
     camera.position.set(40, 20, 0);
 
     controls = new OrbitControls(camera, renderer.domElement);
@@ -39,18 +39,16 @@ function init()
     */
 
     createGUI();
-
-    /*var lig = new THREE.AmbientLight(0x999999);
-    scene.add(lig);
-
-    var lig = new THREE.PointLight(0xffffff, 1, 100); //replaced with new lighting setup (see below at HDRi)
-    lig.position.set(10, 0, -5);
-    scene.add(lig);*/
+    
+    //var lig = new THREE.HemisphereLight(0x999999,0x222222,1);
+    //scene.add(lig);
+    //lig.position.set(10, 0, -5);
+    //scene.add(lig);*/
 
     window.addEventListener('resize', onWinResiz, false);
 
     loader = new GLTFLoader();
-
+    var enMaps = [];
     loader.load('./assets/rig.glb',
         (gltf) =>
         {
@@ -58,10 +56,14 @@ function init()
             rig = gltf;
             scene.add(rig.scene);
             console.log(rig.scene);
-            
+            for (var i=3;i<rig.scene.children[0].children.length;i++){
+                enMaps[enMaps.length]=rig.scene.children[0].children[i].material;
+            }
+
             new RGBELoader()
                 .setDataType(THREE.UnsignedByteType)
-                .load('./assets/kloppenheim_06_1k.hdr', (tex) => {
+                .setPath('assets/')
+                .load('kloppenheim_06_1k.hdr', (tex) => {
                     var premGenerator = new THREE.PMREMGenerator(renderer);
                     premGenerator.compileEquirectangularShader();
 
@@ -69,14 +71,17 @@ function init()
 
                     //scene.background = envMap;
                     scene.enviroment = envMap;
-                    
-                    for(var i=3;i<rig.scene.children[0].children.length;i++){
-                        rig.scene.children[0].children[i].material.envMap = envMap;
+
+                    console.log(enMaps);
+
+                    for(var i=0;i<enMaps.length;i++){
+                        enMaps[i].envMap=envMap;
+                        console.log(enMaps[i]);
                     }
-                
+
                     tex.dispose();
                     premGenerator.dispose();
-                });
+                })
         },
         (xhr) =>
         {
@@ -86,9 +91,31 @@ function init()
         {
             console.log('error: ' + err);
         });
-    
-       
-}
+/*
+    new RGBELoader()
+        .setDataType(THREE.UnsignedByteType)
+        .setPath('assets/')
+        .load('kloppenheim_06_1k.hdr', (tex) => {
+            var premGenerator = new THREE.PMREMGenerator(renderer);
+            premGenerator.compileEquirectangularShader();
+
+            let envMap = premGenerator.fromEquirectangular(tex).texture;
+
+            scene.background = envMap;
+            scene.enviroment = envMap;
+
+            console.log(enMaps);
+
+            for(var i=0;i<enMaps.length;i++){
+                enMaps[i].envMap=envMap;
+                console.log(enMaps[i]);
+            }
+
+            tex.dispose();
+            premGenerator.dispose();
+        });
+*/
+        }
 
 function createGUI()
 {
@@ -154,7 +181,7 @@ function createGUI()
         {
             render();
             let dataURL = renderer.domElement.toDataURL();
-            downloadURL(dataURL)
+            downloadURL(dataURL);
         }
     };
 
@@ -183,7 +210,7 @@ function animate()
         let armL = pelvis.children[0].children[0].children[1].children[0];
 
         if (fram % 120 == 0) {
-            //console.log(rig);
+            console.log(scene);
         }
         armR.rotation.set(sets['right arm']['upper']['XRot'], sets['right arm']['upper']['YRot'], sets['right arm']['upper']['ZRot']);
         armR.children[0].rotation.set(sets['right arm']['lower']['XRot'], sets['right arm']['lower']['YRot'], sets['right arm']['lower']['ZRot']);
@@ -201,7 +228,7 @@ function render()
     renderer.render(scene, camera);
 }
 
-function downloadURL(url) 
+function downloadURL(url)
 {
     let anchor = document.createElement("a");
     anchor.style = "display: none;"
