@@ -100,11 +100,11 @@ function createGUI()
         'right arm': {
             'upper': {
                 'XRot': 0,
-                'YRot': 0,
-                'ZRot': 0
+                'YRot': 0.25,
+                'ZRot': -1.55
             },
             'lower': {
-                'XRot': 0,
+                'XRot': -2.157,
                 'YRot': 0,
                 'ZRot': 0
             }
@@ -112,13 +112,13 @@ function createGUI()
         'left arm': {
             'upper': {
                 'XRot': 0,
-                'YRot': 0,
-                'ZRot': 0
+                'YRot': 2.822,
+                'ZRot': -1.55
             },
             'lower': {
-                'XRot': 0,
-                'YRot': 0,
-                'ZRot': 0
+                'XRot': 2.002,
+                'YRot': -0.078,
+                'ZRot': -0.023
             }
         }
     };
