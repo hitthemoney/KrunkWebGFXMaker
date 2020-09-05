@@ -3,7 +3,7 @@ import { GUI } from './dat.gui.module.js'
 import { GLTFLoader } from './GLTFLoader.js'
 import { OrbitControls } from './OrbitControls.js'
 import { RGBELoader} from './RGBELoader.js'
-
+window.THREE = THREE;
 var scene, controls, camera, renderer, loader, rig, sets;
 
 if(localStorage["hasAlert"] !== "t") alert("This is not the most recommended way for you to make renders, I recommend downloading blender instead at https://blender.org");
@@ -165,7 +165,7 @@ function animate()
 {
     fram++;
     if (fram % 120 == 0) {
-        console.log(sets);
+        //console.log(sets);
     }
     if (rig) { //ensures rig is loaded before messing with it :]
         let pelvis = rig.scene.children[0].children[0];
@@ -173,7 +173,7 @@ function animate()
         let armL = pelvis.children[0].children[0].children[1].children[0];
 
         if (fram % 120 == 0) {
-            console.log(rig);
+            //console.log(rig);
         }
         armR.rotation.set(sets['right arm']['upper']['XRot'], sets['right arm']['upper']['YRot'], sets['right arm']['upper']['ZRot']);
         armR.children[0].rotation.set(sets['right arm']['lower']['XRot'], sets['right arm']['lower']['YRot'], sets['right arm']['lower']['ZRot']);
