@@ -24,7 +24,7 @@ function init()
     }catch(e){
         alert("this browser has difficulty starting the WebGL context, please use another browser");
     }
-    camera.position.set(40, 20, 0);
+    camera.position.set(0, 20, 40);
 
     controls = new OrbitControls(camera, renderer.domElement);
 
@@ -39,7 +39,7 @@ function init()
     */
 
     createGUI();
-    
+
     //var lig = new THREE.HemisphereLight(0x999999,0x222222,1);
     //scene.add(lig);
     //lig.position.set(10, 0, -5);
@@ -69,7 +69,6 @@ function init()
 
                     let envMap = premGenerator.fromEquirectangular(tex).texture;
 
-                    //scene.background = envMap;
                     scene.enviroment = envMap;
 
                     console.log(enMaps);
@@ -78,10 +77,13 @@ function init()
                         enMaps[i].envMap=envMap;
                         console.log(enMaps[i]);
                     }
+                    for (var i=3;i<rig.scene.children[0].children.length;i++){
+                        rig.scene.children[0].children[i].material.envMap = envMap;
+                    }
 
                     tex.dispose();
                     premGenerator.dispose();
-                })
+                });
         },
         (xhr) =>
         {
@@ -133,6 +135,15 @@ function createGUI()
     var folder2_1 = folder2.addFolder('Upper');
     var folder2_2 = folder2.addFolder('Lower');
 
+    var folder3_1 = folder3.addFolder('Head');
+    var folder3_2 = folder3.addFolder('Main');
+
+    var folder4_1 = folder4.addFolder('Upper');
+    var folder4_2 = folder4.addFolder('Lower');
+
+    var folder5_1 = folder5.addFolder('Upper');
+    var folder5_2 = folder5.addFolder('Lower');
+
     sets = {
         'right arm': {
             'upper': {
@@ -157,6 +168,42 @@ function createGUI()
                 'YRot': -0.078,
                 'ZRot': -0.023
             }
+        },
+        'body':{
+            'head':{
+                'XRot': 0,
+                'YRot': 0,
+                'ZRot': 0
+            },
+            'main': {
+                'XRot': 0,
+                'YRot': 0,
+                'ZRot' :0
+            }
+        },
+        'left leg': {
+            'upper':{
+                'XRot': 3.142,
+                'YRot': -1.555,
+                'ZRot': -0.128
+            },
+            'lower':{
+                'XRot': 0,
+                'YRot': 0,
+                'ZRot': 0.157
+            }
+        },
+        'right leg':{
+            'upper':{
+                'XRot': -3.142,
+                'YRot': -1.555,
+                'ZRot': -0.185
+            },
+            'lower':{
+                'XRot':0,
+                'YRot':0,
+                'ZRot':0.215
+            }
         }
     };
 
@@ -175,6 +222,31 @@ function createGUI()
     folder2_2.add(sets['left arm']['lower'], 'XRot', -3.1415926, 3.1415926, 0.001);
     folder2_2.add(sets['left arm']['lower'], 'YRot', -3.1415926, 3.1415926, 0.001);
     folder2_2.add(sets['left arm']['lower'], 'ZRot', -3.1415926, 3.1415926, 0.001);
+
+    folder3_1.add(sets['body']['head'],'XRot',-3.1415926,3.1415925,0.001);
+    folder3_1.add(sets['body']['head'],'YRot',-3.1415926,3.1415925,0.001);
+    folder3_1.add(sets['body']['head'],'ZRot',-3.1415926,3.1415925,0.001);
+
+    folder3_2.add(sets['body']['main'],'XRot',-3.1415926,3.1415925,0.001);
+    folder3_2.add(sets['body']['main'],'YRot',-3.1415926,3.1415925,0.001);
+    folder3_2.add(sets['body']['main'],'ZRot',-3.1415926,3.1415925,0.001);
+
+    folder4_1.add(sets['right leg']['upper'],'XRot',-3.1415926,3.1415925,0.001);
+    folder4_1.add(sets['right leg']['upper'],'YRot',-3.1415926,3.1415925,0.001);
+    folder4_1.add(sets['right leg']['upper'],'ZRot',-3.1415926,3.1415925,0.001);
+
+    folder4_2.add(sets['right leg']['lower'],'XRot',-3.1415926,3.1415925,0.001);
+    folder4_2.add(sets['right leg']['lower'],'YRot',-3.1415926,3.1415925,0.001);
+    folder4_2.add(sets['right leg']['lower'],'ZRot',-3.1415926,3.1415925,0.001);
+
+    folder5_1.add(sets['left leg']['upper'],'XRot',-3.1415926,3.1415925,0.001);
+    folder5_1.add(sets['left leg']['upper'],'YRot',-3.1415926,3.1415925,0.001);
+    folder5_1.add(sets['left leg']['upper'],'ZRot',-3.1415926,3.1415925,0.001);
+
+    folder5_2.add(sets['left leg']['lower'],'XRot',-3.1415926,3.1415925,0.001);
+    folder5_2.add(sets['left leg']['lower'],'YRot',-3.1415926,3.1415925,0.001);
+    folder5_2.add(sets['left leg']['lower'],'ZRot',-3.1415926,3.1415925,0.001);
+
 
     var takeSS = {
         add: function ()
@@ -217,6 +289,17 @@ function animate()
 
         armL.rotation.set(sets['left arm']['upper']['XRot'], sets['left arm']['upper']['YRot'], sets['left arm']['upper']['ZRot']);
         armL.children[0].rotation.set(sets['left arm']['lower']['XRot'], sets['left arm']['lower']['YRot'], sets['left arm']['lower']['ZRot']);
+
+        pelvis.rotation.set(sets['body']['main']['XRot'],sets['body']['main']['YRot'],sets['body']['main']['ZRot']);
+        pelvis.children[0].children[0].children[0].rotation.set(sets['body']['head']['XRot'],sets['body']['head']['YRot'],sets['body']['head']['ZRot']);
+
+        rig.scene.children[0].children[1].rotation.set(sets['left leg']['upper']['XRot'],sets['left leg']['upper']['YRot'],sets['left leg']['upper']['ZRot']);
+
+        rig.scene.children[0].children[1].children[0].rotation.set(sets['left leg']['lower']['XRot'],sets['left leg']['lower']['YRot'],sets['left leg']['lower']['ZRot']);
+
+        rig.scene.children[0].children[2].rotation.set(sets['right leg']['upper']['XRot'],sets['right leg']['upper']['YRot'],sets['right leg']['upper']['ZRot']);
+
+        rig.scene.children[0].children[2].children[0].rotation.set(sets['right leg']['lower']['XRot'],sets['right leg']['lower']['YRot'],sets['right leg']['lower']['ZRot']);
     }
     requestAnimationFrame(animate);
     controls.update();
@@ -231,8 +314,8 @@ function render()
 function downloadURL(url)
 {
     let anchor = document.createElement("a");
-    anchor.style = "display: none;"
-    anchor.download = "render_result.png"
+    anchor.style = "display: none;";
+    anchor.download = "render_result.png";
     anchor.href = url;
     document.body.appendChild(anchor);
     anchor.click();
